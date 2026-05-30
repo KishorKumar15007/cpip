@@ -51,7 +51,3 @@ local/          Local-only files (ignored by Git)
 ## Purpose
 
 This project is primarily a systems and backend engineering exercise built around a real workflow: competitive programming practice. The platform is intended to grow incrementally, with each phase focusing on a specific engineering domain while remaining useful as a personal tool.
-
-## License
-
-MIT
