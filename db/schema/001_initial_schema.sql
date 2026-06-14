@@ -73,7 +73,7 @@ CREATE TABLE "Submissions" (
     platform TEXT NOT NULL,
     platform_submission_id TEXT NOT NULL,
     verdict TEXT NOT NULL,
-    language TEXT,
+    language TEXT NOT NULL,
     submitted_at TIMESTAMPTZ NOT NULL,
     attempt_number INT NOT NULL,
     PRIMARY KEY (submission_id),
