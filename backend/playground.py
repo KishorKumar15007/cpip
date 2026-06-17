@@ -1,64 +1,58 @@
-from sqlalchemy import select
+''' FOR TESTING PURPOSES ONLY'''
+
+
+import time
+
+from sqlalchemy import func, select
 
 from backend.db.session import SessionLocal
-from backend.models.user import User
+
+from backend.models.problem import Problem
+from backend.models.tag import Tag
+from backend.models.problem_tag import ProblemTag
+from backend.models.contest_participation import (
+    ContestParticipation,
+)
+from backend.models.submission import Submission
 
 
-session = SessionLocal()
+start = time.perf_counter()
 
-try:
-    # -------------------------
-    # INSERT
-    # -------------------------
+with SessionLocal() as session:
 
-    test_user = User(
-        username="orm_test_user",
-        email="orm_test@example.com",
-        lc_username="orm_test_lc",
-        cf_username="orm_test_cf",
+    problems = session.scalar(
+        select(func.count())
+        .select_from(Problem)
     )
 
-    session.add(test_user)
-    session.commit()
-
-    print("User inserted.")
-
-    # -------------------------
-    # SELECT
-    # -------------------------
-
-    stmt = select(User).where(
-        User.username == "orm_test_user"
+    tags = session.scalar(
+        select(func.count())
+        .select_from(Tag)
     )
 
-    user = session.execute(stmt).scalar_one()
-
-    print(
-        user.user_id,
-        user.username,
-        user.email,
+    problem_tags = session.scalar(
+        select(func.count())
+        .select_from(ProblemTag)
     )
 
-    # -------------------------
-    # DELETE
-    # -------------------------
-
-    session.delete(user)
-    session.commit()
-
-    print("User deleted.")
-
-    # -------------------------
-    # VERIFY DELETION
-    # -------------------------
-
-    stmt = select(User).where(
-        User.username == "orm_test_user"
+    contests = session.scalar(
+        select(func.count())
+        .select_from(ContestParticipation)
     )
 
-    user = session.execute(stmt).scalar_one_or_none()
+    submissions = session.scalar(
+        select(func.count())
+        .select_from(Submission)
+    )
 
-    print("After deletion:", user)
+print(f"Problems: {problems}")
+print(f"Tags: {tags}")
+print(f"ProblemTags: {problem_tags}")
+print(f"ContestParticipation: {contests}")
+print(f"Submissions: {submissions}")
 
-finally:
-    session.close()
+end = time.perf_counter()
+
+print(
+    f"Verification completed in {end - start:.2f} seconds"
+)
