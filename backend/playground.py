@@ -1,58 +1,59 @@
-''' FOR TESTING PURPOSES ONLY'''
-
-
-import time
-
-from sqlalchemy import func, select
-
 from backend.db.session import SessionLocal
 
-from backend.models.problem import Problem
-from backend.models.tag import Tag
-from backend.models.problem_tag import ProblemTag
-from backend.models.contest_participation import (
-    ContestParticipation,
+from backend.services.analytics.service import (
+    AnalyticsService,
 )
-from backend.models.submission import Submission
 
-
-start = time.perf_counter()
+analytics_service = AnalyticsService()
 
 with SessionLocal() as session:
 
-    problems = session.scalar(
-        select(func.count())
-        .select_from(Problem)
+    summary = (
+        analytics_service.get_user_summary(
+            session,
+            user_id=4,
+        )
+    )
+    history = (
+        analytics_service.get_rating_history(
+            session,
+            user_id=4,
+        )
+    )
+    top_tags = (
+        analytics_service.get_top_tags(
+            session,
+            user_id=4,
+        )
+    )
+    rates = (
+        analytics_service.get_tag_success_rates(
+            session,
+            user_id=4,
+        )
+    )
+    distribution = (
+        analytics_service.get_rating_distribution(
+            session,
+            user_id=4,
+        )
     )
 
-    tags = session.scalar(
-        select(func.count())
-        .select_from(Tag)
-    )
+    for row in distribution:
+        print(row)
 
-    problem_tags = session.scalar(
-        select(func.count())
-        .select_from(ProblemTag)
-    )
+    # for row in rates:
+    #     print(row)
 
-    contests = session.scalar(
-        select(func.count())
-        .select_from(ContestParticipation)
-    )
+    # print(
+    #     analytics_service.get_verdict_breakdown(
+    #         session,
+    #         user_id=4,
+    #     )
+    # )
 
-    submissions = session.scalar(
-        select(func.count())
-        .select_from(Submission)
-    )
+    # print(top_tags)
 
-print(f"Problems: {problems}")
-print(f"Tags: {tags}")
-print(f"ProblemTags: {problem_tags}")
-print(f"ContestParticipation: {contests}")
-print(f"Submissions: {submissions}")
+    # print(history[:5])
 
-end = time.perf_counter()
-
-print(
-    f"Verification completed in {end - start:.2f} seconds"
-)
+    # print(summary)
