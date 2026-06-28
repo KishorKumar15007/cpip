@@ -1,3 +1,7 @@
+from fastapi import HTTPException, status
+
+from backend.models.user import User
+
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -10,11 +14,33 @@ from backend.models.problem_tag import ProblemTag
 
 class AnalyticsService:
 
+    def _get_user(
+        self,
+        session: Session,
+        user_id: int,
+    ) -> User:
+        user = session.get(
+            User,
+            user_id,
+        )
+
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"User {user_id} not found.",
+            )
+
+        return user
+
     def get_user_summary(
         self,
         session: Session,
         user_id: int,
     ):
+        self._get_user(
+            session,
+            user_id,
+        )
         total_submissions = session.scalar(
             select(
                 func.count()
@@ -82,6 +108,10 @@ class AnalyticsService:
         session: Session,
         user_id: int,
     ):
+        self._get_user(
+            session,
+            user_id,
+        )
         contests = session.scalars(
             select(
                 ContestParticipation
@@ -113,6 +143,10 @@ class AnalyticsService:
         user_id: int,
         limit: int = 10,
     ):
+        self._get_user(
+            session,
+            user_id,
+        )
         results = session.execute(
             select(
                 Tag.name,
@@ -173,6 +207,10 @@ class AnalyticsService:
         session: Session,
         user_id: int,
     ):
+        self._get_user(
+            session,
+            user_id,
+        )
         results = session.execute(
             select(
                 Submission.verdict,
@@ -202,6 +240,10 @@ class AnalyticsService:
         session: Session,
         user_id: int,
     ):
+        self._get_user(
+            session,
+            user_id,
+        )
         results = session.execute(
             select(
                 Tag.name,
@@ -288,6 +330,10 @@ class AnalyticsService:
         session: Session,
         user_id: int,
     ):
+        self._get_user(
+            session,
+            user_id,
+        )
         results = session.execute(
             select(
                 Problem.cf_rating,
