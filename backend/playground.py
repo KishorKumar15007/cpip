@@ -1,59 +1,68 @@
 from backend.db.session import SessionLocal
 
-from backend.services.analytics.service import (
-    AnalyticsService,
+from backend.services.codeforces.client import (
+    CodeforcesClient,
+)
+from backend.services.codeforces.sync import (
+    CodeforcesSyncService,
 )
 
-analytics_service = AnalyticsService()
+from backend.services.leetcode.client import (
+    LeetCodeClient,
+)
+from backend.services.leetcode.sync import (
+    LeetCodeSyncService,
+)
 
-with SessionLocal() as session:
+from dotenv import load_dotenv
+import os
 
-    summary = (
-        analytics_service.get_user_summary(
-            session,
-            user_id=4,
-        )
-    )
-    history = (
-        analytics_service.get_rating_history(
-            session,
-            user_id=4,
-        )
-    )
-    top_tags = (
-        analytics_service.get_top_tags(
-            session,
-            user_id=4,
-        )
-    )
-    rates = (
-        analytics_service.get_tag_success_rates(
-            session,
-            user_id=4,
-        )
-    )
-    distribution = (
-        analytics_service.get_rating_distribution(
-            session,
-            user_id=4,
-        )
+load_dotenv()
+
+session = SessionLocal()
+
+USER_ID = 2
+
+try:
+
+    print("=" * 80)
+    print("CODEFORCES SYNC")
+    print("=" * 80)
+
+    cf_client = CodeforcesClient()
+
+    cf_sync = CodeforcesSyncService(
+        cf_client,
     )
 
-    for row in distribution:
-        print(row)
+    print(cf_sync.sync_all(
+        session,
+        USER_ID,
+    ))
 
-    # for row in rates:
-    #     print(row)
+    print()
 
-    # print(
-    #     analytics_service.get_verdict_breakdown(
-    #         session,
-    #         user_id=4,
-    #     )
-    # )
+    print("=" * 80)
+    print("LEETCODE SYNC")
+    print("=" * 80)
 
-    # print(top_tags)
+    lc_client = LeetCodeClient(
+        session_cookie=os.getenv(
+            "LEETCODE_SESSION",
+        ),
+        csrf_token=os.getenv(
+            "LEETCODE_CSRFTOKEN",
+        ),
+    )
 
-    # print(history[:5])
+    lc_sync = LeetCodeSyncService(
+        lc_client,
+    )
 
-    # print(summary)
+    print(lc_sync.sync_all(
+        session,
+        USER_ID,
+    ))
+
+finally:
+    session.close()

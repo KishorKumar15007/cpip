@@ -4,7 +4,7 @@ import httpx
 class CodeforcesClient:
     BASE_URL = "https://codeforces.com/api"
 
-    def __init__(self, timeout: int = 10):
+    def __init__(self, timeout: int = 120):
         self.client = httpx.Client(
             base_url=self.BASE_URL,
             timeout=timeout,

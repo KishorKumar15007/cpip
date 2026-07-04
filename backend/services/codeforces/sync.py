@@ -312,4 +312,23 @@ class CodeforcesSyncService:
             "missing_problems": (
                 missing_problems
             ),
-        }    
+        }
+
+    def sync_all(
+        self,
+        session: Session,
+        user_id: int,
+    ):
+        return {
+            "problems": self.sync_problems(
+                session,
+            ),
+            "contests": self.sync_contest_history(
+                session,
+                user_id,
+            ),
+            "submissions": self.sync_submissions(
+                session,
+                user_id,
+            ),
+        }
