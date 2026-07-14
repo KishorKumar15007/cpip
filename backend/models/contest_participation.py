@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Text, Integer, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Text, Integer, DateTime, ForeignKey, UniqueConstraint, BigInteger, Index
 from sqlalchemy.orm import Mapped, mapped_column
 
 from backend.db.base import Base
@@ -14,15 +14,28 @@ class ContestParticipation(Base):
             "user_id",
             "platform",
             "contest_id",
-            name="uq_contestparticipation_user_id_platform_contest_id"
+            name="uq_contestparticipation_user_id_platform_contest_id",
+        ),
+
+        Index(
+            "idx_contestparticipation_user_id",
+            "user_id",
+        ),
+
+        Index(
+            "idx_contestparticipation_user_date",
+            "user_id",
+            "participated_at",
         ),
     )
 
     participation_id: Mapped[int] = mapped_column(
+        BigInteger,
         primary_key=True
     )
 
     user_id: Mapped[int] = mapped_column(
+        BigInteger,
         ForeignKey("User.user_id"),
         nullable=False
     )

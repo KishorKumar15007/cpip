@@ -1,4 +1,4 @@
-from sqlalchemy import Text
+from sqlalchemy import Text, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 
 from backend.db.base import Base
@@ -8,6 +8,7 @@ class Tag(Base):
     __tablename__ = "Tags"
 
     tag_id: Mapped[int] = mapped_column(
+        BigInteger,
         primary_key=True
     )
     

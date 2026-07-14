@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Text, DateTime, func
+from sqlalchemy import Text, DateTime, func, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
 
 from backend.db.base import Base
@@ -10,6 +10,7 @@ class User(Base):
     __tablename__ = "User"
 
     user_id: Mapped[int] = mapped_column(
+        BigInteger,
         primary_key=True
     )
 

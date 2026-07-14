@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Text, Integer, DateTime, CheckConstraint, UniqueConstraint, func
+from sqlalchemy import Text, Integer, DateTime, CheckConstraint, UniqueConstraint, func, BigInteger, Index
 from sqlalchemy.orm import Mapped, mapped_column
 
 from backend.db.base import Base
@@ -23,9 +23,14 @@ class Problem(Base):
             "cf_rating IS NULL OR cf_rating > 0",
             name="ck_problems_cf_rating_positive",
         ),
+        Index(
+            "idx_problems_platform",
+            "platform",
+        ),
     )
 
     problem_id: Mapped[int] = mapped_column(
+        BigInteger,
         primary_key=True
     )
 
