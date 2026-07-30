@@ -5,14 +5,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtual environments
+# ==========================================
+# Virtual Environments
+# ==========================================
 .venv/
 venv/
 env/
 ENV/
 
 # ==========================================
-# FastAPI / General Python
+# FastAPI / Python Tooling
 # ==========================================
 .pytest_cache/
 .mypy_cache/
@@ -27,26 +29,25 @@ htmlcov/
 .idea/
 
 # ==========================================
-# OS files
+# Operating System Files
 # ==========================================
 .DS_Store
 Thumbs.db
 
 # ==========================================
-# Environment variables / Secrets
+# Environment Variables / Secrets
 # ==========================================
 .env
 .env.*
 !.env.example
 
 # ==========================================
-# Local project files
+# Local Project Files
 # ==========================================
 local/
-*.log
 
 # ==========================================
-# Database dumps / backups
+# Database Dumps / Backups
 # ==========================================
 *.sql.bak
 *.dump
@@ -65,7 +66,13 @@ redis-data/
 alembic/versions/__pycache__/
 
 # ==========================================
-# Build artifacts
+# Celery
+# ==========================================
+celerybeat-schedule
+celerybeat-schedule.*
+
+# ==========================================
+# Build Artifacts
 # ==========================================
 build/
 dist/
@@ -77,18 +84,11 @@ dist/
 .ipynb_checkpoints/
 
 # ==========================================
-# Temporary files
+# Temporary Files
 # ==========================================
 tmp/
 temp/
 *.tmp
-
-# ==========================================
-# Node (future React frontend)
-# ==========================================
-node_modules/
-frontend/node_modules/
-frontend/dist/
 
 # ==========================================
 # Logs
@@ -100,3 +100,10 @@ logs/
 # Cache
 # ==========================================
 .cache/
+
+# ==========================================
+# Future React Frontend
+# ==========================================
+node_modules/
+frontend/node_modules/
+frontend/dist/

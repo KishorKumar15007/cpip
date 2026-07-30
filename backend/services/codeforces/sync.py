@@ -125,16 +125,6 @@ class CodeforcesSyncService:
             user_id,
         )
 
-        if user is None:
-            raise ValueError(
-                f"User {user_id} not found."
-            )
-
-        if user.cf_username is None:
-            raise ValueError(
-                f"User {user_id} has no Codeforces handle."
-            )
-
         contests = self.client.get_user_rating(
             user.cf_username
         )
@@ -191,16 +181,6 @@ class CodeforcesSyncService:
             User,
             user_id,
         )
-
-        if user is None:
-            raise ValueError(
-                f"User {user_id} not found."
-            )
-
-        if user.cf_username is None:
-            raise ValueError(
-                f"User {user_id} has no Codeforces handle."
-            )
 
         submissions = self.client.get_user_submissions(
             user.cf_username
@@ -319,6 +299,19 @@ class CodeforcesSyncService:
         session: Session,
         user_id: int,
     ):
+        user = session.get(User, user_id)
+
+        if user is None:
+            raise ValueError(
+                f"User {user_id} not found."
+            )
+
+        if not user.cf_username:
+            return {
+                "status": "skipped",
+                "reason": "No Codeforces handle.",
+            }
+
         return {
             "problems": self.sync_problems(
                 session,

@@ -36,16 +36,6 @@ class LeetCodeSyncService:
             user_id,
         )
 
-        if user is None:
-            raise ValueError(
-                f"User {user_id} not found."
-            )
-
-        if user.lc_username is None:
-            raise ValueError(
-                f"User {user_id} has no LeetCode username."
-            )
-
         raw_user = self.client.get_user_profile(
             user.lc_username,
         )
@@ -185,16 +175,6 @@ class LeetCodeSyncService:
             user_id,
         )
 
-        if user is None:
-            raise ValueError(
-                f"User {user_id} not found."
-            )
-
-        if user.lc_username is None:
-            raise ValueError(
-                f"User {user_id} has no LeetCode username."
-            )
-
         problem_map = {
             problem.url.removesuffix("/").split("/")[-1]:
                 problem.problem_id
@@ -331,6 +311,22 @@ class LeetCodeSyncService:
         session: Session,
         user_id: int,
     ):
+        user = session.get(
+            User,
+            user_id,
+        )
+
+        if user is None:
+            raise ValueError(
+                f"User {user_id} not found."
+            )
+
+        if not user.leetcode_username:
+            return {
+                "status": "skipped",
+                "reason": "No LeetCode username.",
+            }
+
         return {
             "user": self.sync_user(
                 session,
