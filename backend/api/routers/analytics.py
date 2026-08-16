@@ -11,26 +11,29 @@ from sqlalchemy.orm import Session
 
 from backend.api.dependencies import (
     get_session,
+    verify_user_access,
 )
-from backend.services.analytics.service import (
-    AnalyticsService,
-)
-
 from backend.schemas.analytics import (
     UserSummaryResponse,
     RatingHistoryEntry,
     TopTagResponse,
     VerdictBreakdownResponse,
     TagSuccessRateResponse,
-    RatingDistributionResponse
+    RatingDistributionResponse,
 )
+from backend.services.analytics.service import (
+    AnalyticsService,
+)
+
 
 router = APIRouter(
     prefix="/analytics",
     tags=["Analytics"],
 )
 
+
 analytics_service = AnalyticsService()
+
 
 UserId = Annotated[
     int,
@@ -40,9 +43,16 @@ UserId = Annotated[
     ),
 ]
 
+
 DBSession = Annotated[
     Session,
     Depends(get_session),
+]
+
+
+UserAccess = Annotated[
+    object,
+    Depends(verify_user_access),
 ]
 
 
@@ -61,6 +71,7 @@ DBSession = Annotated[
 def get_user_summary(
     user_id: UserId,
     session: DBSession,
+    _: UserAccess,
 ):
     return analytics_service.get_user_summary(
         session,
@@ -83,6 +94,7 @@ def get_user_summary(
 def get_rating_history(
     user_id: UserId,
     session: DBSession,
+    _: UserAccess,
 ):
     return analytics_service.get_rating_history(
         session,
@@ -105,6 +117,7 @@ def get_rating_history(
 def get_top_tags(
     user_id: UserId,
     session: DBSession,
+    _: UserAccess,
     limit: Annotated[
         int,
         Query(
@@ -136,6 +149,7 @@ def get_top_tags(
 def get_verdict_breakdown(
     user_id: UserId,
     session: DBSession,
+    _: UserAccess,
 ):
     return analytics_service.get_verdict_breakdown(
         session,
@@ -158,6 +172,7 @@ def get_verdict_breakdown(
 def get_tag_success_rates(
     user_id: UserId,
     session: DBSession,
+    _: UserAccess,
 ):
     return analytics_service.get_tag_success_rates(
         session,
@@ -180,6 +195,7 @@ def get_tag_success_rates(
 def get_rating_distribution(
     user_id: UserId,
     session: DBSession,
+    _: UserAccess,
 ):
     return analytics_service.get_rating_distribution(
         session,
