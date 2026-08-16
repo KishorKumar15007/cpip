@@ -6,6 +6,7 @@ from backend.api.routers.analytics import (
 from backend.api.routers.sync import (
     router as sync_router,
 )
+from backend.api.routers.auth import router as auth_router
 
 app = FastAPI(
     title="CP Intelligence Platform",
@@ -19,3 +20,5 @@ app.include_router(
 app.include_router(
     sync_router,
 )
+
+app.include_router(auth_router)

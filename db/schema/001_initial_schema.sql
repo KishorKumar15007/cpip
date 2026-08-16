@@ -10,6 +10,26 @@ CREATE TABLE "User" (
     UNIQUE (username),
     UNIQUE (email)
 );
+CREATE TABLE "PasswordCredentials" (
+    user_id BIGINT NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (user_id) REFERENCES "User"(user_id) ON DELETE CASCADE
+);
+CREATE TABLE "OAuthIdentities" (
+    identity_id BIGINT GENERATED ALWAYS AS IDENTITY,
+    user_id BIGINT NOT NULL,
+    provider TEXT NOT NULL,
+    provider_id TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (identity_id),
+    FOREIGN KEY (user_id) REFERENCES "User"(user_id) ON DELETE CASCADE,
+    UNIQUE (provider, provider_id),
+    UNIQUE (user_id, provider),
+    CHECK (provider IN ('google', 'github'))
+);
 CREATE TABLE "Problems" (
     problem_id BIGINT GENERATED ALWAYS AS IDENTITY,
     platform TEXT NOT NULL,
@@ -83,7 +103,6 @@ CREATE TABLE "Submissions" (
     UNIQUE (platform, platform_submission_id),
     CHECK (attempt_number > 0)
 );
--- Foreign Key Indexes
 CREATE INDEX idx_usersessions_user_id ON "UserSessions"(user_id);
 CREATE INDEX idx_submissions_user_id ON "Submissions"(user_id);
 CREATE INDEX idx_submissions_problem_id ON "Submissions"(problem_id);

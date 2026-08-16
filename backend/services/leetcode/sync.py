@@ -321,7 +321,7 @@ class LeetCodeSyncService:
                 f"User {user_id} not found."
             )
 
-        if not user.leetcode_username:
+        if not user.lc_username:
             return {
                 "status": "skipped",
                 "reason": "No LeetCode username.",
