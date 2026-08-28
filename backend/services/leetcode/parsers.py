@@ -51,7 +51,6 @@ def parse_submission(
 def parse_user(
     user: dict,
 ) -> dict:
-
     return {
         "lc_username": user[
             "matchedUser"

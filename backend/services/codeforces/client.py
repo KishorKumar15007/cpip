@@ -24,9 +24,21 @@ class CodeforcesClient:
 
         data = response.json()
 
+        if not isinstance(data, dict):
+            raise ValueError(
+                "Invalid Codeforces API response."
+            )
+
         if data.get("status") != "OK":
             raise ValueError(
-                f"Codeforces API Error: {data.get('comment', 'Unknown error')}"
+                "Codeforces API Error: "
+                f"{data.get('comment', 'Unknown error')}"
+            )
+
+        if "result" not in data:
+            raise ValueError(
+                "Invalid Codeforces API response: "
+                "missing result."
             )
 
         return data["result"]
@@ -40,16 +52,32 @@ class CodeforcesClient:
             {"handles": handle},
         )
 
+        if (
+            not isinstance(result, list)
+            or len(result) == 0
+            or not isinstance(result[0], dict)
+        ):
+            raise ValueError(
+                "Invalid Codeforces user.info response."
+            )
+
         return result[0]
 
     def get_user_rating(
         self,
         handle: str,
     ):
-        return self._get(
+        result = self._get(
             "user.rating",
             {"handle": handle},
         )
+
+        if not isinstance(result, list):
+            raise ValueError(
+                "Invalid Codeforces user.rating response."
+            )
+
+        return result
 
     def get_user_submissions(
         self,
@@ -63,12 +91,41 @@ class CodeforcesClient:
         if count is not None:
             params["count"] = count
 
-        return self._get(
+        result = self._get(
             "user.status",
             params,
         )
 
+        if not isinstance(result, list):
+            raise ValueError(
+                "Invalid Codeforces user.status response."
+            )
+
+        return result
+
     def get_problemset(self):
-        return self._get(
+        result = self._get(
             "problemset.problems"
         )
+
+        if not isinstance(result, dict):
+            raise ValueError(
+                "Invalid Codeforces problemset response."
+            )
+
+        if "problems" not in result:
+            raise ValueError(
+                "Invalid Codeforces problemset response: "
+                "missing problems."
+            )
+
+        if not isinstance(result["problems"], list):
+            raise ValueError(
+                "Invalid Codeforces problemset response: "
+                "problems must be a list."
+            )
+
+        return result
+    
+    def close(self):
+        self.client.close()

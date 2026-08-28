@@ -17,4 +17,3 @@ class Tag(Base):
         unique=True,
         nullable=False
     )
-

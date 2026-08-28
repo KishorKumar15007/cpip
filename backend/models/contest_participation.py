@@ -74,5 +74,3 @@ class ContestParticipation(Base):
         DateTime(timezone=True),
         nullable=False
     )
-
-

@@ -1,0 +1,29 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.10.1
+    hooks:
+      - id: pip-audit
+        args: ["-r", "requirements.txt"]
+
+  - repo: local
+    hooks:
+      - id: schema-snapshot-reminder
+        name: Check schema snapshot is updated with migrations
+        entry: bash -c 'echo "Migration files changed — remember to regenerate db/schema/current_schema.sql (pg_dump --schema-only ...) before committing."'
+        language: system
+        files: ^alembic/versions/.*\.py$
+        pass_filenames: false

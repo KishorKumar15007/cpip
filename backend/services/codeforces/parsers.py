@@ -65,7 +65,4 @@ def parse_user(
 ) -> dict:
     return {
         "cf_username": user["handle"],
-        "last_synced_at": datetime.now(
-            tz=UTC,
-        ),
     }

@@ -44,4 +44,3 @@ class RatingDistributionResponse(
 ):
     rating: int
     solved: int
-

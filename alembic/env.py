@@ -17,6 +17,7 @@ from backend.models.contest_participation import ContestParticipation
 from backend.models.user_session import UserSession
 from backend.models.password_credential import PasswordCredential
 from backend.models.oauth_identity import OAuthIdentity
+from backend.models.refresh_token import RefreshToken
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

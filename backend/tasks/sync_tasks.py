@@ -59,6 +59,7 @@ def sync_codeforces(user_id: int):
             raise
 
         finally:
+            client.close()
             session.close()
 
 
@@ -111,6 +112,7 @@ def sync_leetcode(user_id: int):
             raise
 
         finally:
+            client.close()
             session.close()
 
 

@@ -35,7 +35,12 @@ class User(Base):
         server_default=func.now(),
     )
 
-    last_synced_at: Mapped[datetime | None] = mapped_column(
+    cf_last_synced_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+    lc_last_synced_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
     )

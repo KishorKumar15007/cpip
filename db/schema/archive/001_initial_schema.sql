@@ -1,3 +1,4 @@
+-- historical only, see alembic/versions for real migration history
 CREATE TABLE "User" (
     user_id BIGINT GENERATED ALWAYS AS IDENTITY,
     username TEXT NOT NULL,
@@ -5,7 +6,8 @@ CREATE TABLE "User" (
     lc_username TEXT,
     cf_username TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    last_synced_at TIMESTAMPTZ,
+    cf_last_synced_at TIMESTAMPTZ,
+    lc_last_synced_at TIMESTAMPTZ,
     PRIMARY KEY (user_id),
     UNIQUE (username),
     UNIQUE (email)

@@ -1,53 +1,81 @@
 # CP Intelligence Platform
 
-A personal competitive programming analytics platform that aggregates problem-solving data from Codeforces and LeetCode and provides insights into learning progress, problem-solving patterns, and performance trends.
+A personal competitive programming analytics platform that aggregates problem-solving data from Codeforces and LeetCode into a unified system for analyzing learning progress, performance, and problem-solving patterns.
 
-## Goals
+## Features
 
-- Track competitive programming activity across multiple platforms
-- Build a unified database of problems, submissions, and user statistics
-- Analyze performance trends over time
-- Identify strengths and weak areas across algorithmic topics
-- Serve as a long-term learning and engineering project
+- Codeforces and LeetCode data synchronization
+- Unified problems, submissions, tags, and contest history
+- Incremental synchronization with duplicate-safe ingestion
+- Background synchronization using Celery and Redis
+- REST API built with FastAPI
+- JWT authentication with access and refresh tokens
+- PostgreSQL persistence using SQLAlchemy
+- Database migrations using Alembic
 
 ## Tech Stack
 
-### Backend
 - Python
 - FastAPI
 - PostgreSQL
 - SQLAlchemy
 - Alembic
-
-### Infrastructure
 - Redis
 - Celery
-- Docker
 
-## Current Status
+## Getting Started
 
-🚧 Phase 1: Data Layer
+### Prerequisites
 
-Planned features:
+- Python
+- PostgreSQL
+- Redis
 
-- PostgreSQL schema design
-- Codeforces data synchronization
-- LeetCode data synchronization
-- Background job processing with Celery
-- REST API endpoints
-- Authentication
-- Database migrations
+### Installation
 
-## Repository Structure
+Clone the repository and create a virtual environment:
 
-```
-backend/        Application code
-db/             Schema, queries, and database assets
-docs/           Architecture notes and decisions
-infrastructure/ Deployment and infrastructure files
-local/          Local-only files (ignored by Git)
+```bash
+git clone 
+cd CPIP
+
+python -m venv .venv
 ```
 
-## Purpose
+Activate the virtual environment and install dependencies:
 
-This project is primarily a systems and backend engineering exercise built around a real workflow: competitive programming practice. The platform is intended to grow incrementally, with each phase focusing on a specific engineering domain while remaining useful as a personal tool.
+```bash
+pip install -r requirements.txt
+```
+
+Create a local `.env` file from `.env.example` and configure the required database, Redis, and authentication settings.
+
+Run the database migrations:
+
+```bash
+alembic upgrade head
+```
+
+### Running
+
+Start the FastAPI application:
+
+```bash
+uvicorn backend.main:app --reload
+```
+
+Start the Celery worker separately:
+
+```bash
+celery -A backend.celery_app worker --loglevel=info
+```
+
+The API documentation is available through FastAPI's generated documentation at:
+
+```text
+http://localhost:8000/docs
+```
+
+## Configuration
+
+Configuration is provided through environment variables. See `.env.example` for the required variables.

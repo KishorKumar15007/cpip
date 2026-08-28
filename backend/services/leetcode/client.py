@@ -62,9 +62,26 @@ class LeetCodeClient:
 
         data = response.json()
 
+        if not isinstance(data, dict):
+            raise ValueError(
+                "Invalid LeetCode GraphQL response."
+            )
+
         if "errors" in data:
             raise ValueError(
                 f"LeetCode GraphQL Error: {data['errors']}"
+            )
+
+        if "data" not in data:
+            raise ValueError(
+                "Invalid LeetCode GraphQL response: "
+                "missing data."
+            )
+
+        if not isinstance(data["data"], dict):
+            raise ValueError(
+                "Invalid LeetCode GraphQL response: "
+                "data must be an object."
             )
 
         return data["data"]
@@ -82,13 +99,38 @@ class LeetCodeClient:
         }
         """
 
-        return self._graphql(
+        result = self._graphql(
             query=query,
             variables={
                 "username": username,
             },
             operation_name="getUserProfile",
         )
+
+        if "matchedUser" not in result:
+            raise ValueError(
+                "Invalid LeetCode user profile response: "
+                "missing matchedUser."
+            )
+
+        if (
+            result["matchedUser"] is None
+            or not isinstance(result["matchedUser"], dict)
+        ):
+            raise ValueError(
+                "Invalid LeetCode user profile response."
+            )
+
+        if not isinstance(
+            result["matchedUser"].get("username"),
+            str,
+        ):
+            raise ValueError(
+                "Invalid LeetCode user profile response: "
+                "missing username."
+            )
+
+        return result
 
     def get_submission_list(
         self,
@@ -123,7 +165,7 @@ class LeetCodeClient:
         }
         """
 
-        return self._graphql(
+        result = self._graphql(
             query=query,
             variables={
                 "offset": offset,
@@ -133,6 +175,45 @@ class LeetCodeClient:
             },
             operation_name="submissions",
         )
+
+        if "submissionList" not in result:
+            raise ValueError(
+                "Invalid LeetCode submission response: "
+                "missing submissionList."
+            )
+
+        submission_list = result["submissionList"]
+
+        if submission_list is None:
+            return {
+                "submissionList": None,
+            }
+
+        if not isinstance(submission_list, dict):
+            raise ValueError(
+                "Invalid LeetCode submission response."
+            )
+
+        if "hasNext" not in submission_list:
+            raise ValueError(
+                "Invalid LeetCode submission response: "
+                "missing hasNext."
+            )
+
+        submissions = submission_list.get(
+            "submissions"
+        )
+
+        if (
+            submissions is not None
+            and not isinstance(submissions, list)
+        ):
+            raise ValueError(
+                "Invalid LeetCode submission response: "
+                "submissions must be a list or null."
+            )
+
+        return result
 
     def get_problemset(
         self,
@@ -171,7 +252,7 @@ class LeetCodeClient:
         }
         """
 
-        return self._graphql(
+        result = self._graphql(
             query=query,
             variables={
                 "skip": offset,
@@ -229,3 +310,44 @@ class LeetCodeClient:
             },
             operation_name="problemsetQuestionListV2",
         )
+
+        if "problemsetQuestionListV2" not in result:
+            raise ValueError(
+                "Invalid LeetCode problemset response: "
+                "missing problemsetQuestionListV2."
+            )
+
+        problemset = result[
+            "problemsetQuestionListV2"
+        ]
+
+        if not isinstance(problemset, dict):
+            raise ValueError(
+                "Invalid LeetCode problemset response."
+            )
+
+        if "questions" not in problemset:
+            raise ValueError(
+                "Invalid LeetCode problemset response: "
+                "missing questions."
+            )
+
+        if not isinstance(
+            problemset["questions"],
+            list,
+        ):
+            raise ValueError(
+                "Invalid LeetCode problemset response: "
+                "questions must be a list."
+            )
+
+        if "hasMore" not in problemset:
+            raise ValueError(
+                "Invalid LeetCode problemset response: "
+                "missing hasMore."
+            )
+
+        return result
+
+    def close(self):
+        self.client.close()
