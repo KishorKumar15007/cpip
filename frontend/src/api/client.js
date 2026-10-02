@@ -16,7 +16,7 @@ async function parseResponse(response) {
 }
 
 export async function apiRequest(path, options = {}, canRefresh = true) {
-  const { accessToken, refreshToken } = useAuthStore.getState();
+  const { accessToken } = useAuthStore.getState();
   const headers = new Headers(options.headers);
 
   if (options.body && !headers.has("Content-Type")) {
@@ -29,15 +29,15 @@ export async function apiRequest(path, options = {}, canRefresh = true) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
+    credentials: "include",
   });
 
-  if (response.status === 401 && canRefresh && refreshToken && path !== "/auth/refresh") {
+  if (response.status === 401 && canRefresh && path !== "/auth/refresh") {
     try {
       const refreshed = await apiRequest(
         "/auth/refresh",
         {
           method: "POST",
-          body: JSON.stringify({ refresh_token: refreshToken }),
         },
         false,
       );
@@ -58,6 +58,18 @@ export function login(credentials) {
   }, false);
 }
 
+export function refreshSession() {
+  return apiRequest("/auth/refresh", { method: "POST" }, false);
+}
+
+export function logout() {
+  return apiRequest("/auth/logout", { method: "POST" }, false);
+}
+
+export function finalizeRegistration(username) {
+  return apiRequest("/auth/register/finalize", { method: "POST", body: JSON.stringify({ username }) }, false);
+}
+
 export function register(account) {
   return apiRequest("/auth/register", {
     method: "POST",
@@ -67,4 +79,8 @@ export function register(account) {
 
 export function getSubmissions() {
   return apiRequest("/submissions");
+}
+
+export function triggerSync(platform) {
+  return apiRequest(`/sync/${platform}`, { method: "POST" });
 }

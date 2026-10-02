@@ -4,7 +4,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { ThemeProvider } from "./components/ThemeProvider";
+import { refreshSession } from "./api/client";
+import { useAuthStore } from "./store/authStore";
 import "./styles.css";
+
+function AuthBootstrap({ children }) {
+  const initialized = React.useRef(false);
+  const finishInitialization = useAuthStore((state) => state.finishInitialization);
+  const setTokens = useAuthStore((state) => state.setTokens);
+  React.useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+    refreshSession().then(setTokens).catch(() => finishInitialization());
+  }, [finishInitialization, setTokens]);
+  return children;
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,7 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <BrowserRouter>
-          <App />
+          <AuthBootstrap><App /></AuthBootstrap>
         </BrowserRouter>
       </ThemeProvider>
     </QueryClientProvider>
