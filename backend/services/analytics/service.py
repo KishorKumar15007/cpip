@@ -11,6 +11,14 @@ from backend.models.tag import Tag
 from backend.models.problem import Problem
 from backend.models.problem_tag import ProblemTag
 
+from backend.services.analytics.types import (
+    UserSummaryResult,
+    RatingHistoryResult,
+    TopTagResult,
+    VerdictBreakdownResult,
+    TagSuccessRateResult,
+    RatingDistributionResult,
+)
 
 class AnalyticsService:
 
@@ -36,7 +44,7 @@ class AnalyticsService:
         self,
         session: Session,
         user_id: int,
-    ):
+    ) -> UserSummaryResult:
         self._get_user(
             session,
             user_id,
@@ -107,7 +115,7 @@ class AnalyticsService:
         self,
         session: Session,
         user_id: int,
-    ):
+    ) -> list[RatingHistoryResult]:
         self._get_user(
             session,
             user_id,
@@ -142,7 +150,7 @@ class AnalyticsService:
         session: Session,
         user_id: int,
         limit: int = 10,
-    ):
+    ) -> list[TopTagResult]:
         self._get_user(
             session,
             user_id,
@@ -206,7 +214,7 @@ class AnalyticsService:
         self,
         session: Session,
         user_id: int,
-    ):
+    ) -> list[VerdictBreakdownResult]:
         self._get_user(
             session,
             user_id,
@@ -239,7 +247,7 @@ class AnalyticsService:
         self,
         session: Session,
         user_id: int,
-    ):
+    ) -> list[TagSuccessRateResult]:
         self._get_user(
             session,
             user_id,
@@ -329,7 +337,7 @@ class AnalyticsService:
         self,
         session: Session,
         user_id: int,
-    ):
+    ) -> list[RatingDistributionResult]:
         self._get_user(
             session,
             user_id,
